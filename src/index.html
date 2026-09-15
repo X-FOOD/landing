@@ -41,25 +41,14 @@
     <link rel="preload" href="/assets/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="/assets/style.css">
 
-    <!-- ===== Google Analytics 4 =====
-         1. Получите Measurement ID вида G-XXXXXXXXXX (инструкция в README.md → «Google Analytics»).
-         2. Замените значение GA_MEASUREMENT_ID ниже. Пока стоит заглушка — скрипт GA не загружается. -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-G85X8HWWKG"></script>
     <script>
-        window.GA_MEASUREMENT_ID = 'G-G85X8HWWKG';
-    </script>
-    <script>
-        (function (id) {
-            if (!id || /^G-X{6,}$/.test(id)) return; // заглушка — не грузим GA
-            var s = document.createElement('script');
-            s.async = true;
-            s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
-            document.head.appendChild(s);
-            window.dataLayer = window.dataLayer || [];
-            function gtag() { dataLayer.push(arguments); }
-            window.gtag = gtag;
-            gtag('js', new Date());
-            gtag('config', id);
-        })(window.GA_MEASUREMENT_ID);
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        
+        gtag('config', 'G-G85X8HWWKG');
     </script>
 
     <!-- ===== Структурированные данные (schema.org) ===== -->

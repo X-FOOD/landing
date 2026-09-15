@@ -136,17 +136,14 @@ ssh xfood-npm 'docker exec npm nginx -t && docker exec npm nginx -s reload'
 2. Название `XFOOD Controlling`, часовой пояс `Москва`, валюта `RUB` → Next → заполните данные о бизнесе → Create.
 3. **Data streams → Add stream → Web**: URL `https://xfood.tech`, название `xfood.tech` → Create stream.
 4. На экране потока скопируйте **Measurement ID** — вида `G-XXXXXXXXXX`.
-5. В [`src/index.html`](src/index.html) найдите строку
-   ```js
-   window.GA_MEASUREMENT_ID = 'G-XXXXXXXXXX';
-   ```
-   и подставьте свой ID. Пока стоит заглушка, скрипт GA не загружается вовсе.
+5. В [`src/index.html`](src/index.html) в блоке `<!-- Google tag (gtag.js) -->` подставьте свой ID в двух местах
+   (`gtag/js?id=G-…` и `gtag('config', 'G-…')`). Сейчас там уже стоит рабочий ID `G-G85X8HWWKG`.
 6. `git commit` + `git push` → через пару минут откройте сайт и проверьте:
    GA4 → **Reports → Realtime** — должен появиться 1 активный пользователь.
    Точнее: Admin → **DebugView** с расширением [Google Analytics Debugger](https://chrome.google.com/webstore/detail/google-analytics-debugger/jnkmfdileelhofjcijamephohjechhna).
 
 Что уже отправляется в GA (см. `src/js/main.js`):
-- `page_view` — автоматически;
+- `page_view` — автоматически (сниппет gtag.js в `<head>`);
 - `generate_lead` — клики по «Связаться», «Оформить подписку», Telegram в футере (параметр `label`: `nav_contact`, `tariff_1cam`, `tariff_3cam`, `footer_telegram`);
 - `select_plan` — выбор плана (`tariff`, `plan`, `value`).
 

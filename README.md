@@ -94,7 +94,9 @@ location = / {
 }
 ```
 
-Куда он вставлен — см. раздел «Nginx Proxy Manager» ниже. Точный `location = /` имеет приоритет над `location /`,
+**Сейчас применён вариант C** (файл `/data/nginx/custom/server_redirect.conf` внутри контейнера `npm`, применён 2026-09-15). Если захотите перенести блок в UI NPM (вариант A/B) — **сначала удалите этот файл** (`docker exec npm rm /data/nginx/custom/server_redirect.conf` + `nginx -s reload`), иначе nginx упадёт на `duplicate location "= /"`.
+
+Подробнее — см. раздел «Nginx Proxy Manager» ниже. Точный `location = /` имеет приоритет над `location /`,
 поэтому редирект глубоких ссылок в CRM не меняется.
 
 ### Nginx Proxy Manager: как править

@@ -157,6 +157,28 @@ ssh xfood-npm 'docker exec npm nginx -t && docker exec npm nginx -s reload'
   Если нужна точная статистика по РФ, добавьте **Яндекс.Метрику** тем же способом (счётчик → код → в `<head>`).
 - по 152-ФЗ и практике РКН стоит добавить уведомление об использовании cookie/метрик (баннер), если начнёте собирать аналитику.
 
+## Google Analytics из Claude Code (MCP)
+
+Установлен [google-analytics-mcp](https://github.com/googleanalytics/google-analytics-mcp) (пакет `analytics-mcp`, запуск через `uvx`):
+`claude mcp add analytics-mcp --scope user -- uvx analytics-mcp`. Он читает отчёты GA4 (`run_report`, `run_realtime_report`, `run_funnel_report`, …).
+
+Чтобы он заработал, нужны учётные данные Google (делается один раз, руками владельца GA):
+
+1. В [Google Cloud Console](https://console.cloud.google.com/) создайте проект (или возьмите существующий) и включите два API:
+   [Google Analytics Admin API](https://console.cloud.google.com/apis/library/analyticsadmin.googleapis.com) и
+   [Google Analytics Data API](https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com).
+2. Авторизуйтесь в терминале (откроется браузер; аккаунт должен иметь доступ к свойству GA4):
+   ```bash
+   gcloud auth application-default login --scopes=https://www.googleapis.com/auth/analytics.readonly,https://www.googleapis.com/auth/cloud-platform
+   ```
+   Файл сохранится в `~/.config/gcloud/application_default_credentials.json` — MCP подхватит его сам.
+3. Укажите проект для квот (замените `YOUR_PROJECT_ID`):
+   ```bash
+   claude mcp remove analytics-mcp --scope user
+   claude mcp add analytics-mcp --scope user -e GOOGLE_PROJECT_ID=YOUR_PROJECT_ID -- uvx analytics-mcp
+   ```
+4. Перезапустите сессию Claude Code и спросите: «покажи мои свойства Google Analytics».
+
 ## SEO-чеклист (что уже сделано)
 
 - `<title>`, `meta description`, `canonical`, `robots`, `theme-color`, `lang="ru"`;

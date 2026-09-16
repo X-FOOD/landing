@@ -40,8 +40,8 @@ npm run dev        # пересобирает CSS при изменениях (i
 
 ```js
 '1cam': {
-  '12': { current: 2999, old: null, discount: null },   // цена, старая цена (или null), % для бейджа (или null)
-  '20': { current: 4699, old: 4990, discount: 6 },
+  '12': { current: 3999, old: null, discount: null },   // цена, старая цена (или null), % для бейджа (или null)
+  '20': { current: 4999, old: 6665, discount: 25 },
   ...
 }
 ```
@@ -50,7 +50,9 @@ npm run dev        # пересобирает CSS при изменениях (i
 
 Две вещи держите синхронными вручную (они нужны поисковикам, которые не выполняют JS):
 1. начальные цены в `src/index.html` (`id="price-1cam"`, `id="price-3cam"`, бейджи `data-plan-discount`);
-2. цены в JSON-LD (`"price": "2999"` / `"5499"` в блоке `application/ld+json`).
+2. цены в JSON-LD (`"price": "3999"` / `"5999"` в блоке `application/ld+json`).
+
+Цена пробной проверки («1 ₽») упоминается в тексте `index.html` (баннер, кнопки, тарифы, FAQ), в meta/OG-описаниях, JSON-LD и на `og.png` — при изменении правьте эти места и перегенерируйте картинку (`python3 scripts/gen-images.py`).
 
 ## Деплой
 
@@ -144,7 +146,7 @@ ssh xfood-npm 'docker exec npm nginx -t && docker exec npm nginx -s reload'
 
 Что уже отправляется в GA (см. `src/js/main.js`):
 - `page_view` — автоматически (сниппет gtag.js в `<head>`);
-- `generate_lead` — клики по «Связаться», «Оформить подписку», Telegram в футере (параметр `label`: `nav_contact`, `tariff_1cam`, `tariff_3cam`, `footer_telegram`);
+- `generate_lead` — клики по «Попробовать» (баннер, hero), «Связаться», «Оформить подписку», Telegram в футере (параметр `label`: `banner_trial`, `hero_trial`, `nav_contact`, `tariff_1cam`, `tariff_3cam`, `footer_telegram`);
 - `select_plan` — выбор плана (`tariff`, `plan`, `value`).
 
 Рекомендуется в GA4: Admin → **Events** → отметить `generate_lead` как **Key event** (конверсия).

@@ -38,7 +38,7 @@ font_path = next(p for p in ["/System/Library/Fonts/Supplemental/Arial Bold.ttf"
 f1 = ImageFont.truetype(font_path, 84); f2 = ImageFont.truetype(font_path, 36)
 d.text((80, 250), "Посмотрим ваши", font=f1, fill=(255, 255, 255))
 d.text((80, 345), "камеры за вас.", font=f1, fill=(255, 255, 255))
-d.text((80, 480), "Аудит по стандартам УК • от 2 999 руб. в месяц", font=f2, fill=(160, 160, 160))
+d.text((80, 480), "Первая проверка — 1 руб. • далее от 3 999 руб./мес", font=f2, fill=(160, 160, 160))
 d.text((80, 540), "xfood.tech", font=f2, fill=(255, 102, 0))
 og.save(f"{A}/og.png", optimize=True)
 print("mark", mark.size, "| files:", sorted(os.listdir(A)))

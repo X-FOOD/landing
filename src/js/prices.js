@@ -15,6 +15,9 @@ window.PRICES = {
   currency: '₽',
   unit: 'в месяц / за 1 объект',
 
+  // Пробная проверка (баннер, CTA, FAQ). Меняется здесь и в тексте index.html.
+  trial: { price: 1 },
+
   // Планы проверок (одинаковые для всех тарифов). Ключ = value радиокнопки.
   plans: {
     '12': { label: 'Отдохни',        checks: '12 проверок (Пт, Сб, Вс)' },
@@ -25,14 +28,14 @@ window.PRICES = {
   // Тарифы. Ключ = суффикс name у радиокнопок (plan-1cam / plan-3cam).
   tariffs: {
     '1cam': {
-      '12': { current: 2999, old: null, discount: null },
-      '20': { current: 4699, old: 4990, discount: 6 },
-      '28': { current: 6399, old: 6990, discount: 9 }
+      '12': { current: 3999, old: null, discount: null },
+      '20': { current: 4999, old: 6665, discount: 25 },
+      '28': { current: 6999, old: 9331, discount: 25 }
     },
     '3cam': {
-      '12': { current: 5499, old: null,  discount: null },
-      '20': { current: 8799, old: 9165,  discount: 4 },
-      '28': { current: 9999, old: 12890, discount: 22 }
+      '12': { current: 5999, old: null,  discount: null },
+      '20': { current: 8999, old: 9998,  discount: 10 },
+      '28': { current: 9999, old: 14285, discount: 30 }
     }
   }
 };

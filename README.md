@@ -159,22 +159,50 @@ ssh xfood-npm 'docker exec npm nginx -t && docker exec npm nginx -s reload'
 Установлен [google-analytics-mcp](https://github.com/googleanalytics/google-analytics-mcp) (пакет `analytics-mcp`, запуск через `uvx`):
 `claude mcp add analytics-mcp --scope user -- uvx analytics-mcp`. Он читает отчёты GA4 (`run_report`, `run_realtime_report`, `run_funnel_report`, …).
 
-Чтобы он заработал, нужны учётные данные Google (делается один раз, руками владельца GA):
+Чтобы он заработал, нужны учётные данные Google (делается один раз, руками владельца GA).
 
-1. В [Google Cloud Console](https://console.cloud.google.com/) создайте проект (или возьмите существующий) и включите два API:
-   [Google Analytics Admin API](https://console.cloud.google.com/apis/library/analyticsadmin.googleapis.com) и
-   [Google Analytics Data API](https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com).
-2. Авторизуйтесь в терминале (откроется браузер; аккаунт должен иметь доступ к свойству GA4):
+> ⚠️ Команда `gcloud auth application-default login --scopes=…analytics.readonly` со встроенным client ID gcloud
+> **больше не работает** («Приложение заблокировано»): Google запретил этот scope для дефолтного клиента.
+> Нужен свой OAuth-клиент (вариант A) или сервисный аккаунт (вариант B, проще).
+
+Общий шаг: в [Google Cloud Console](https://console.cloud.google.com/) создайте проект и включите
+[Google Analytics Admin API](https://console.cloud.google.com/apis/library/analyticsadmin.googleapis.com) и
+[Google Analytics Data API](https://console.cloud.google.com/apis/library/analyticsdata.googleapis.com).
+
+### Вариант B — сервисный аккаунт (рекомендуется, без браузерного OAuth)
+
+1. Console → **IAM & Admin → Service Accounts → Create service account**: имя `analytics-mcp`, роли не нужны → Done.
+   Либо в терминале (после `gcloud auth login` и `gcloud config set project PROJECT_ID`):
    ```bash
-   gcloud auth application-default login --scopes=https://www.googleapis.com/auth/analytics.readonly,https://www.googleapis.com/auth/cloud-platform
+   gcloud iam service-accounts create analytics-mcp --display-name "Analytics MCP"
+   gcloud iam service-accounts keys create ~/.config/gcloud/analytics-mcp-sa.json --iam-account analytics-mcp@PROJECT_ID.iam.gserviceaccount.com
+   chmod 600 ~/.config/gcloud/analytics-mcp-sa.json
    ```
-   Файл сохранится в `~/.config/gcloud/application_default_credentials.json` — MCP подхватит его сам.
-3. Укажите проект для квот (замените `YOUR_PROJECT_ID`):
+   (В консоли: открыть аккаунт → **Keys → Add key → Create new key → JSON**, сохранить в `~/.config/gcloud/analytics-mcp-sa.json`.)
+2. Дать сервисному аккаунту доступ к GA4: [analytics.google.com](https://analytics.google.com/) → **Admin → Property → Property access management → +** →
+   e-mail `analytics-mcp@PROJECT_ID.iam.gserviceaccount.com`, роль **Viewer**.
+3. Перерегистрировать MCP с путём к ключу и ID проекта:
    ```bash
-   claude mcp remove analytics-mcp --scope user
-   claude mcp add analytics-mcp --scope user -e GOOGLE_PROJECT_ID=YOUR_PROJECT_ID -- uvx analytics-mcp
+   claude mcp remove analytics-mcp -s user
+   claude mcp add analytics-mcp --scope user -e GOOGLE_APPLICATION_CREDENTIALS=$HOME/.config/gcloud/analytics-mcp-sa.json -e GOOGLE_PROJECT_ID=PROJECT_ID -- uvx analytics-mcp
    ```
-4. Перезапустите сессию Claude Code и спросите: «покажи мои свойства Google Analytics».
+4. Перезапустить сессию Claude Code и спросить: «покажи мои свойства Google Analytics».
+
+### Вариант A — свой OAuth-клиент (вход под вашим Google-аккаунтом)
+
+1. Console → **APIs & Services → OAuth consent screen** (Google Auth Platform): тип **External**, статус **Testing**,
+   в **Test users** добавьте свой Google-аккаунт (тот, у которого есть доступ к GA4).
+2. **Credentials → Create credentials → OAuth client ID → Desktop app** → скачать JSON в `~/.config/gcloud/oauth-client.json`.
+3. Авторизоваться уже со своим клиентом:
+   ```bash
+   gcloud auth application-default login --scopes=https://www.googleapis.com/auth/analytics.readonly,https://www.googleapis.com/auth/cloud-platform --client-id-file=$HOME/.config/gcloud/oauth-client.json
+   ```
+   Файл ADC сохранится в `~/.config/gcloud/application_default_credentials.json`, MCP найдёт его сам.
+4. Перерегистрировать MCP с ID проекта и перезапустить сессию:
+   ```bash
+   claude mcp remove analytics-mcp -s user
+   claude mcp add analytics-mcp --scope user -e GOOGLE_PROJECT_ID=PROJECT_ID -- uvx analytics-mcp
+   ```
 
 ## SEO-чеклист (что уже сделано)
 
